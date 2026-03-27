@@ -9,14 +9,15 @@ import { globalLimiter } from './middleware/rateLimiter.js'
 import { statusCode } from './constants/statusCode.js'
 
 const app = express()
-app.use(helmet())
-app.use(morgan('dev'))
 
 app.use(cors({
   origin: process.env.CORS_ORIGIN || '*',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }))
+
+app.use(helmet())
+app.use(morgan('dev'))
 
 app.use(express.json({ limit: '10kb' }))
 
