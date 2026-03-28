@@ -7,14 +7,9 @@ import validateEnv from './config/env.js'
 
 const config = validateEnv()
 
-const server = app.listen(config.PORT, async () => {
-  try {
-    await connectDB(config.MONGO_URI)
-    console.log(`Server running on port ${config.PORT} [${config.NODE_ENV}]`)
-  } catch (err) {
-    console.error('MongoDB connection failed:', err.message)
-    process.exit(1)
-  }
+await connectDB(config.MONGO_URI)
+const server = app.listen(config.PORT, () => {
+  console.log(`Server running on port ${config.PORT}`)
 })
 
 const shutdown = async (signal) => {
