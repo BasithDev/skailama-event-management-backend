@@ -53,13 +53,21 @@ export const createEvent = async (req, res) => {
 export const getEventsByMembers = async (req,res)=>{
     const {userId} = req.params
 
-    const events = await Event.find({members: userId}).populate('members','name').sort({startTime:1})
+    const events = await Event.find({members: userId})
+        .sort({startTime:1})
+        .populate('members','name')
+        .lean()
 
     if(events.length === 0){
         return res.status(statusCode.NOT_FOUND).json({success:false,message:'No Events found for this Profile'})
     }
 
-    res.json({success:true, data: events})
+    const cleaned = events.map(event => ({
+        ...event,
+        members: (event.members || []).filter(Boolean)
+    }))
+
+    res.json({success:true, data: cleaned})
 }
 
 export const updateEvent = async (req, res) => {
